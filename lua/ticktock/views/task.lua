@@ -218,14 +218,12 @@ end
 function View:create_task()
   vim.ui.input(
       {prompt = 'Enter Todo name: '}, function(title)
-        local t_len = #title
-        if t_len < 3 then
-          response.failed('Todo name should be at least 3 characters.')
-          return
-        elseif t_len > 100 then
-          response.failed('Todo name should be at less than 100 characters.\nTry write to content.')
+        local ok, msg = self:validate_title(title)
+        if not ok then
+          response.failed(msg)
           return
         end
+
         local ok, msg = repo.create(title, '')
         if not ok then
           response.failed('Create task failed: ' .. msg)
@@ -284,14 +282,20 @@ function View:save_task()
   local bufnr = api.nvim_win_get_buf(self.edit_winnr)
   local lines = api.nvim_buf_get_lines(bufnr, 0, -1, false)
   local lines_count = vim.tbl_count(lines)
+  if lines_count < 1 then
+    return
+  end
 
   local updated_title, contents = '', {}
-  if lines_count > 0 then
-    updated_title = lines[1]
+  updated_title = lines[1]
+  local ok, msg = self:validate_title(updated_title)
+  if not ok then
+    response.failed(msg)
+    return
+  end
 
-    for i = 2, lines_count, 1 do
-      table.insert(contents, lines[i])
-    end
+  for i = 2, lines_count, 1 do
+    table.insert(contents, lines[i])
   end
 
   if not contents then
@@ -299,6 +303,7 @@ function View:save_task()
   else
     updated_content = table.concat(contents, '\\n')
   end
+
   local ok, msg = repo.update(self.edit_task_id, {title = updated_title, content = updated_content})
   if not ok then
     response.failed(msg)
@@ -343,6 +348,22 @@ function View:close_hover_window()
   if self.hover_winnr and api.nvim_win_is_valid(self.hover_winnr) then
     api.nvim_win_close(self.hover_winnr, true)
   end
+end
+
+---Validation for task title
+---
+---@param title string
+---@return boolean valid
+---@return string message
+function View:validate_title(title)
+  local t_len = #title
+  if t_len < 3 then
+    return false, 'Todo name should be at least 3 characters.'
+  elseif t_len > 100 then
+    return false, 'Todo name should be at less than 100 characters.\nTry write to content.'
+  end
+
+  return true, ''
 end
 
 ---Close 'edit_task' window
