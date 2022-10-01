@@ -60,12 +60,14 @@ sudo dnf install sqlite sqlite-devel
 Following defaults:
 
 ```lua
+-- Lua
 view = {
   menu = {
     position = 'left', -- One of 'left', 'right'
     width = 35
   },
 },
+-- Work under Normal mode
 key_bindings = {
   menu = {
     open = {'o', '<CR>'}, -- open and swith to Task View
