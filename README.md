@@ -11,6 +11,12 @@ This plugin uses [lua-ljsqlite3](https://github.com/stepelu/lua-ljsqlite3) to pe
 
 ![ticktock](./_assets/demo.png) 
 
+## Features
+
+- Auto save after edited task (trigger event: `InsertLeave`)
+
+- Support `markdown` language syntax
+
 ## Installation
 
 [Packer](https://github.com/wbthomason/packer.nvim)
@@ -78,7 +84,6 @@ key_bindings = {
     edit = 'ge', -- edit task
     complete = 'gc', -- complete task
     delete = 'gd', -- delete task
-    save = '<C-s>', -- save task
     refresh = 'gr', -- refresh task list
     hover_detail = 'K' -- show task detail in float window
   }
