@@ -88,8 +88,8 @@ function View:setup(opts)
   vim.api.nvim_exec(
       [[
         augroup TicktockTask
-            autocmd! * <buffer>
-            autocmd CursorMoved <buffer> lua require("ticktock").do_task_action("close_hover")
+            au CursorMoved <buffer> lua require('ticktock').do_task_action('close_hover')
+            au InsertLeave * execute "lua require('ticktock').do_task_action('save')"
         augroup END
     ]], false
   )
@@ -102,17 +102,12 @@ function View:setup(opts)
       keys = {keys}
     end
 
-    -- Except binding `save` action
-    if action ~= 'save' then
-      for _, key in pairs(keys) do
-        if key ~= 'save' then
-          vim.api.nvim_buf_set_keymap(
-              self.bufnr, 'n', key,
-                  [[<cmd>lua require('ticktock').do_task_action(']] .. action .. [[')<cr>]],
-                  {silent = true, noremap = true, nowait = true}
-          )
-        end
-      end
+    for _, key in pairs(keys) do
+      vim.api.nvim_buf_set_keymap(
+          self.bufnr, 'n', key,
+              [[<cmd>lua require('ticktock').do_task_action(']] .. action .. [[')<cr>]],
+              {silent = true, noremap = true, nowait = true}
+      )
     end
   end
 
@@ -262,6 +257,9 @@ function View:hover_detail()
   self.hover_winnr = winnr
 
   api.nvim_win_set_option(winnr, 'cursorline', true)
+  api.nvim_buf_set_option(bufnr, 'filetype', 'markdown')
+  api.nvim_buf_set_option(bufnr, 'bufhidden', 'wipe')
+
   api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
 
   View.highlight_title(bufnr)
@@ -274,6 +272,7 @@ function View:edit_task()
   self:close_hover_window()
 
   local task_id, lines, win_opts = self:get_render_win_data(false)
+
   -- Expand window width & height
   win_opts.width = win_opts.width + 20
   win_opts.height = win_opts.height + 5
@@ -283,9 +282,11 @@ function View:edit_task()
 
   self.edit_winnr = winnr
   self.edit_task_id = task_id
-  self:set_keymap_for_save_task()
 
   api.nvim_win_set_option(winnr, 'cursorline', true)
+  api.nvim_buf_set_option(bufnr, 'filetype', 'markdown')
+  api.nvim_buf_set_option(bufnr, 'bufhidden', 'wipe')
+
   api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
 
   View.highlight_title(bufnr)
@@ -293,6 +294,10 @@ end
 
 ---Save updated task used together with `edit_task()`
 function View:save_task()
+  if not vim.t.is_ticktock then
+    return
+  end
+
   local bufnr = api.nvim_win_get_buf(self.edit_winnr)
   local lines = api.nvim_buf_get_lines(bufnr, 0, -1, false)
   local lines_count = vim.tbl_count(lines)
@@ -451,35 +456,12 @@ function View:get_render_win_data(is_add_sep_line)
     table.insert(lines, string.rep('-', win_width))
   end
   for _, line in pairs(contents) do
-    if #line > 0 then
+    if #line >= 0 then
       table.insert(lines, line)
     end
   end
 
-  return task_id, lines, {width = win_width, height = vim.tbl_count(lines)}
-end
-
----Get keymap of `save` task
----
-function View:set_keymap_for_save_task()
-  local options = config.opts
-  local key_bindings = options.key_bindings.task
-  for action, keys in pairs(key_bindings) do
-    if type(keys) == 'string' then
-      keys = {keys}
-    end
-
-    if action == 'save' then
-      local bufnr = api.nvim_win_get_buf(self.edit_winnr)
-      for _, key in pairs(keys) do
-        vim.api.nvim_buf_set_keymap(
-            bufnr, 'n', key,
-                [[<cmd>lua require('ticktock').do_task_action(']] .. action .. [[')<cr>]],
-                {silent = true, noremap = true, nowait = true}
-        )
-      end
-    end
-  end
+  return task_id, lines, {width = win_width + 1, height = vim.tbl_count(lines)}
 end
 
 ---Highlight title

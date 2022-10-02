@@ -34,7 +34,7 @@ local global = {db_file = initial_db_file(), table_name = 'tasks'}
 local defaults = {
   view = {
     menu = {
-      position = 'left', -- One of 'left', 'right'
+      position = 'left', -- one of 'left', 'right'
       width = 35
     },
     task = {}
@@ -49,7 +49,6 @@ local defaults = {
     },
     task = {
       create = 'gn', -- create new task
-      save = '<C-s>', -- save task
       edit = 'ge', -- edit task
       complete = 'gc', -- complete task
       delete = 'gd', -- delete task

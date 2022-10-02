@@ -44,6 +44,7 @@ Ticktock.open = function(opts)
 
   -- New tabpage
   api.nvim_command('tabe ' .. config.plugin_name)
+  vim.t.is_ticktock = true
 
   -- Default selected menu
   vim.t.tt_selected_menu = constants.TODO_MENU
