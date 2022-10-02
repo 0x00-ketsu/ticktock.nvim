@@ -2,14 +2,13 @@ local db = require('ticktock.db.init')
 local config = require('ticktock.config')
 local logger = require('ticktock.utils.logger')
 local date = require('ticktock.utils.date')
+local util = require('ticktock.utils.util')
 
 local table_name = config.global.table_name
 
 ---@class Task
 ---@field title string
 ---@field content string
----@field create_time integer
----@field create_at integer
 ---@field is_completed integer
 ---@field is_deleted integer
 
@@ -19,8 +18,6 @@ local TASK_FIELDS = {
   ['content'] = 'string',
   ['is_completed'] = 'number',
   ['is_deleted'] = 'number',
-  ['create_time'] = 'string',
-  ['create_at'] = 'number'
 }
 
 local M = {}
@@ -35,6 +32,22 @@ M.search = function(text)
   local sql = "SELECT * FROM " .. table_name .. " WHERE title like %" .. text ..
                   "% OR content like %" .. text .. "%;"
   return M.execute_raw_sql(sql)
+end
+
+---Get uncomplete task count
+---Return -1 if failed
+---
+---@return number
+M.get_uncomplete_task_count = function()
+  local sql = "SELECT COUNT(id) as cnt FROM " .. table_name .. " WHERE is_completed = 0 AND is_deleted = 0;"
+  local result = M.execute_raw_sql(sql)
+
+  if type(result) ~= 'nil' then
+    local uncomplete_count = result['cnt'][1]
+    return tonumber(uncomplete_count, 10)
+  end
+
+  return -1
 end
 
 ---Get task detail with ID

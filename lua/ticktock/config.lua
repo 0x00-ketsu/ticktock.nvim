@@ -2,6 +2,7 @@ local pathlib = require('ticktock.utils.path')
 local response = require('ticktock.utils.response')
 
 local function define_highlights()
+  vim.cmd("highlight TicktockTip ctermfg=159 guifg=#ff9966")
   vim.cmd("highlight TicktockTitle ctermfg=159 guifg=#fabd2f")
   vim.cmd("highlight TicktockCompleted ctermfg=159 guifg=#00FF00")
   vim.cmd("highlight TicktockDeleted ctermfg=159 guifg=#FF0000")

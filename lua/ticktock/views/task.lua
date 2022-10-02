@@ -8,7 +8,6 @@ local repo = require('ticktock.db.task')
 local vutils = require('ticktock.views.utils')
 local window = require('ticktock.window.init')
 local response = require('ticktock.utils.response')
-local util = require('ticktock.utils.util')
 
 ---@class TaskView
 ---@field winnr integer 'Window number'
@@ -131,6 +130,21 @@ end
 function View:load_tasks()
   self:unlock()
   self:clear()
+
+  local key_bindings = config.opts.key_bindings.task
+  local keymap_create_task = key_bindings.create
+  local uncomplete_task_count = repo.get_uncomplete_task_count()
+  if uncomplete_task_count <= 0 then
+    local tips = {
+      'Have a nice day!', '', 'Press `' .. keymap_create_task .. '` to create a new task.'
+    }
+    api.nvim_buf_set_lines(self.bufnr, 0, -1, false, tips)
+
+    for i = 0, #tips, 1 do
+      api.nvim_buf_add_highlight(self.bufnr, config.namespace, 'TicktockTip', i, 0, -1)
+    end
+    return
+  end
 
   local items = {}
   local tasks = self:get_tasks()
@@ -356,10 +370,9 @@ end
 ---@return boolean valid
 ---@return string message
 function View:validate_title(title)
-  local t_len = #title
-  if t_len < 3 then
+  if type(title) == 'nil' or #title < 3 then
     return false, 'Todo name should be at least 3 characters.'
-  elseif t_len > 100 then
+  elseif #title > 100 then
     return false, 'Todo name should be at less than 100 characters.\nTry write to content.'
   end
 
@@ -374,7 +387,7 @@ function View:close_edit_window()
   end
 end
 
----Clean tasks in Task View
+---Clear tasks in Task View
 ---
 function View:clear()
   return api.nvim_buf_set_lines(self.bufnr, 0, -1, false, {})
