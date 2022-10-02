@@ -1,6 +1,7 @@
 local api = vim.api
 
 local config = require('ticktock.config')
+local response = require('ticktock.utils.response')
 local Menu = require('ticktock.views.menu')
 local Task = require('ticktock.views.task')
 
@@ -8,6 +9,22 @@ local Task = require('ticktock.views.task')
 local menu
 ---@class TaskView
 local task
+
+---Do some validations before program running
+---
+---@return boolean valid
+---@return string message
+local function pre_validate()
+  -- validate file format
+  local fileformat = vim.bo.fileformat
+  local accept_fileformats = {'unix', 'mac'}
+  ---@diagnostic disable-next-line: param-type-mismatch
+  if not vim.tbl_contains(accept_fileformats, fileformat) then
+    return false, 'Ticktock is only work under Linux or Mac.'
+  end
+
+  return true, ''
+end
 
 local Ticktock = {}
 
@@ -17,6 +34,13 @@ end
 
 Ticktock.open = function(opts)
   opts = opts or {}
+
+  local ok, msg = pre_validate()
+  if not ok then
+    response.failed(msg)
+    return
+  end
+
   -- New tabpage
   api.nvim_command('tabe ' .. config.plugin_name)
 
