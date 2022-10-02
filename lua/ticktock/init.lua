@@ -4,6 +4,7 @@ local config = require('ticktock.config')
 local response = require('ticktock.utils.response')
 local Menu = require('ticktock.views.menu')
 local Task = require('ticktock.views.task')
+local constants = require('ticktock.views.constants')
 
 ---@class MenuView
 local menu
@@ -43,6 +44,9 @@ Ticktock.open = function(opts)
 
   -- New tabpage
   api.nvim_command('tabe ' .. config.plugin_name)
+
+  -- Default selected menu
+  vim.t.tt_selected_menu = constants.TODO_MENU
 
   -- Task View
   task = Task.create({winnr = api.nvim_get_current_win(), bufnr = api.nvim_get_current_buf()})

@@ -84,7 +84,11 @@ function View:setup(opts)
   self:set_option('signcolumn', 'no', true)
   self:set_option('fcs', 'eob: ', true)
 
-  api.nvim_buf_set_lines(self.bufnr, 0, -1, false, constants.MENUS)
+  local menus = {}
+  table.insert(menus, constants.TODO_MENU)
+  table.insert(menus, constants.COMPLETED_MENU)
+  table.insert(menus, constants.TRASH_MENU)
+  api.nvim_buf_set_lines(self.bufnr, 0, -1, false, menus)
 
   -- Highlight line
   api.nvim_buf_add_highlight(self.bufnr, config.namespace, 'TicktockCompleted', 1, 0, -1)
@@ -114,8 +118,9 @@ end
 ---
 ---@param action string
 function View:do_action(action)
-  local line = api.nvim_get_current_line()
-  self.task_view.filter = constants.MENU_CHOICES[line]
+  local selected_menu = self:get_selected_menu()
+  vim.t.tt_selected_menu = selected_menu
+  self.task_view.filter = constants.MENU_CHOICES[selected_menu]
 
   if action == 'preview' then
     self:preview()
@@ -133,6 +138,13 @@ function View:open()
   if self.task_view then
     View.switch_to(self.task_view.winnr, self.task_view.bufnr)
   end
+end
+
+---Get current selected menu name
+---
+---@return string
+function View:get_selected_menu()
+  return api.nvim_get_current_line()
 end
 
 function View:is_valid()

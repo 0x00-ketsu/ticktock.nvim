@@ -134,7 +134,7 @@ function View:load_tasks()
   local key_bindings = config.opts.key_bindings.task
   local keymap_create_task = key_bindings.create
   local uncomplete_task_count = repo.get_uncomplete_task_count()
-  if uncomplete_task_count <= 0 then
+  if tostring(vim.t.tt_selected_menu) == constants.TODO_MENU and uncomplete_task_count <= 0 then
     local tips = {
       'Have a nice day!', '', 'Press `' .. keymap_create_task .. '` to create a new task.'
     }
