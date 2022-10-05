@@ -49,7 +49,7 @@ local defaults = {
     },
     task = {
       create = 'gn', -- create new task
-      edit = 'ge', -- edit task
+      edit = 'e', -- edit task
       complete = 'gc', -- complete task
       delete = 'gd', -- delete task
       refresh = 'gr', -- refresh task list
