@@ -11,5 +11,3 @@ let g:loaded_ticktock = 1
 let s:lua_rocks_deps_loc = expand("<sfile>:h:r") . "/../lua/ticktock/deps"
 let s:sqlite_loc = s:lua_rocks_deps_loc . '/lua-?/init.lua'
 exe "lua package.path = package.path .. ';" . s:sqlite_loc . "'"
-
-" let s:sqlite_loc = s:lua_rocks_deps_loc . '/lua-?/init.lua;/home/bob/.local/share/nvim/site/pack/packer/start/lua/?/?.lua;/home/bob/.local/share/nvim/site/pack/packer/opt/lua/?/?.lua'

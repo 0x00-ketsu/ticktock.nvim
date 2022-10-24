@@ -64,7 +64,7 @@ end
 ---@param list table
 ---#param key any
 ---@return table
-M.tbl_remove_keu = function(list, key)
+M.tbl_remove_key = function(list, key)
   local i = 0
   local keys, values = {}, {}
   for k, v in pairs(list) do
