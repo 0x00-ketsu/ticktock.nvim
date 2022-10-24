@@ -2,7 +2,6 @@ local db = require('ticktock.db.init')
 local config = require('ticktock.config')
 local logger = require('ticktock.utils.logger')
 local date = require('ticktock.utils.date')
-local util = require('ticktock.utils.util')
 
 local table_name = config.global.table_name
 

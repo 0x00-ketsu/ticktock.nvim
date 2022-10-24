@@ -3,7 +3,6 @@ local api = vim.api
 local config = require('ticktock.config')
 local constants = require('ticktock.views.constants')
 local buffer = require('ticktock.utils.buf')
-local util = require('ticktock.utils.util')
 
 ---@class MenuView
 ---@field winnr integer 'Window number'
