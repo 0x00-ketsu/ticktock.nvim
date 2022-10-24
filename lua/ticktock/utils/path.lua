@@ -57,7 +57,7 @@ end)()
 ---Return file(s) & dir(s) under specific dir_path
 ---
 ---@param dir_path string
----@return array | nil
+---@return table | nil
 M.scandir = function(dir_path)
   local pipe = io.popen('ls ' .. dir_path)
   if not pipe then

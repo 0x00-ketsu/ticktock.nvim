@@ -10,7 +10,7 @@ local M = {}
 ---@field tabpage integer Filter out buffers that are not displayed in a given tabpage.
 
 ---@param opts? BufSpec
----@return array bufnrs
+---@return table bufnrs
 M.list_bufs = function(opts)
   opts = opts or {}
 
