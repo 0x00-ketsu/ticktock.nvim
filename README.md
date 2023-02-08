@@ -2,46 +2,31 @@
 
 A neovim plugin help you manage tasks.
 
-> This plugin is designed to running on Linux / MacOS
-
-If you want to manage tasks on the terminal, have a try with [taskcli](https://github.com/0x00-ketsu/taskcli)
-
 Task datas are stored in [SQLite](https://www.sqlite.org/index.html) database for persistence.
-This plugin uses [lua-ljsqlite3](https://github.com/stepelu/lua-ljsqlite3) to perform the database transactions.
 
-![ticktock](./_assets/demo.png) 
+> This plugin is designed to running on Linux / MacOS.
+>
+> If you want to manage tasks on the terminal, have a try with [taskcli](https://github.com/0x00-ketsu/taskcli).
+
+![ticktock](./_assets/demo.png)
 
 ## Features
 
-- Auto save after edited task (trigger event: `InsertLeave`)
+- Auto save task after edited, triggered by `InsertLeave`.
+- Preview task.
 
-- Support `markdown` language syntax
+## Requirements
 
-## Installation
+<details>
+<summary>sqlite3</summary>
 
-[Packer](https://github.com/wbthomason/packer.nvim)
+Ensure you have `sqlite3` installed locally. (if you are on `Mac` it might be installed already)
 
-```lua
--- Lua
-use {
-  "0x00-ketsu/ticktock.nvim",
-  config = function()
-    require("ticktock").setup {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    },
-  end
-}
-```
-
-**Ensure you have `sqlite3` installed locally.** (if you are on `Mac` it might be installed already)
-
-### Windows
+**Windows**
 
 [Download precompiled](https://www.sqlite.org/download.html) and set `let g:sqlite_clib_path = path/to/sqlite3.dll` (note: `/`)
 
-### Linux
+**Linux**
 
 - Arch
 
@@ -61,34 +46,72 @@ sudo apt-get install sqlite3 libsqlite3-dev
 sudo dnf install sqlite sqlite-devel
 ```
 
+</details>
+
+## Installation
+
+[Packer](https://github.com/wbthomason/packer.nvim)
+
+```lua
+use {
+  '0x00-ketsu/ticktock.nvim',
+  requires = {'kkharji/sqlite.lua'},
+  config = function()
+    require('ticktock').setup {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the setup section below
+    },
+  end
+}
+```
+
 ## Setup
 
 Following defaults:
 
 ```lua
--- Lua
 view = {
   menu = {
-    position = 'left', -- One of 'left', 'right'
-    width = 35
-  },
-},
--- Work under Normal mode
-key_bindings = {
-  menu = {
-    open = {'o', '<CR>'}, -- open and swith to Task View
-    preview = 'go' -- preview Task View
+    position = 'left', -- one of 'left', 'right'
+    width = 35,
+    keys = {
+      open = {'o', '<CR>'}, -- open and swith to Task View
+      preview = 'p' -- preview Task View
+      -- next = 'j', -- next item
+      -- previous = 'k' -- preview item
+    }
   },
   task = {
-    create = 'gn', -- create new task
-    edit = 'ge', -- edit task
-    complete = 'gc', -- complete task
-    delete = 'gd', -- delete task
-    refresh = 'gr', -- refresh task list
-    hover_detail = 'K' -- show task detail in float window
+    keys = {
+      create = 'n', -- create new task
+      edit = 'e', -- edit task
+      complete = 'gc', -- complete task
+      delete = 'gd', -- delete task
+      refresh = 'r', -- refresh task list
+      hover = 'K' -- show task detail in float window
+    }
   }
 }
 ```
+
+## Commands
+
+- `:TTOpen`: open ticktock view.
+- `:TTClose`: close ticktock view.
+
+## API
+
+- Get todo task(s) count
+
+  `vim.g.tt_todo_count` (variable type is `number`)
+
+  e.g.
+
+  ```lua
+  local has_todo = vim.g.tt_todo_count > 0 and true or false
+  local todo = has_todo and '📆' or ''
+  ```
 
 ## License
 

@@ -1,6 +1,6 @@
 local M = {}
 
----Pretty print
+---Pretty print.
 ---
 ---@param list any
 ---@param level? integer

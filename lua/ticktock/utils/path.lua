@@ -2,6 +2,9 @@ local vl = vim.loop
 
 local M = {}
 
+---Get current system path separator
+---
+---@return string
 M.sep = (function()
   if jit then
     local os = string.lower(jit.os)
@@ -15,7 +18,7 @@ M.sep = (function()
   end
 end)()
 
----Return true if filepath is exists
+---Check filepath is exists.
 ---
 ---@param filepath string
 ---@return boolean
@@ -23,7 +26,7 @@ M.exists = function(filepath)
   return M.fs_stat(filepath).exists and true or false
 end
 
----Return file path state (exists, is_directory)
+---Return file path state (exists, is_directory).
 ---
 ---@param filepath string
 ---@return table
@@ -35,7 +38,7 @@ M.fs_stat = function(filepath)
   }
 end
 
----Return true if filepath is directory else false
+---Return `true` if filepath is directory else `false`.
 ---
 ---@param filepath string
 ---@return boolean
@@ -44,7 +47,7 @@ M.is_dir = function(filepath)
   return stat.is_directory
 end
 
----Return parent path of input file absoult path
+---Return parent path of input file absoulte path.
 ---
 ---@return function(abs_path) string
 M.get_parent_dir = (function()
@@ -54,10 +57,10 @@ M.get_parent_dir = (function()
   end
 end)()
 
----Return file(s) & dir(s) under specific dir_path
+---Return file(s) & dir(s) under specific dir_path.
 ---
 ---@param dir_path string
----@return table | nil
+---@return table?
 M.scandir = function(dir_path)
   local pipe = io.popen('ls ' .. dir_path)
   if not pipe then

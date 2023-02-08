@@ -48,7 +48,7 @@ end
 
 ---@param name string
 ---@param opts? BufSpec
----@return integer | nil
+---@return number?
 M.find_named_buffer = function(name, opts)
   for _, bufnr in ipairs(M.list_bufs(opts)) do
     if fn.bufname(bufnr) == name then
@@ -78,18 +78,18 @@ M.wipe_named_buffer = function(name, opts)
   end
 end
 
----Lock Buffer
+---Lock buffer.
 ---
----@param bufnr integer
-M.lock_buf = function(bufnr)
+---@param bufnr number
+M.lock = function(bufnr)
   api.nvim_buf_set_option(bufnr, 'readonly', true)
   api.nvim_buf_set_option(bufnr, 'modifiable', false)
 end
 
----Unlock Buffer
+---Unlock buffer
 ---
----@param bufnr integer
-M.unlock_buf = function(bufnr)
+---@param bufnr number
+M.unlock = function(bufnr)
   api.nvim_buf_set_option(bufnr, 'modifiable', true)
   api.nvim_buf_set_option(bufnr, 'readonly', false)
 end

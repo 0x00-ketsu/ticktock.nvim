@@ -1,9 +1,9 @@
 local api = vim.api
 
----Calculate window `anchor`
+---Calculate window `anchor` and return.
 ---
----@param width integer
----@param height integer
+---@param width number
+---@param height number
 ---@return string
 local function decide_anchor(width, height)
   local row = vim.fn.winline() > vim.fn.winheight(0) - height and 'S' or 'N'
@@ -14,14 +14,14 @@ end
 
 local M = {}
 
----Create a new float window
+---Create a new float window.
 ---
----@param enter_win? boolean 'default is false'
+---@param is_enter_win? boolean 'default is false'
 ---@param opts? table
----@return integer 'window handler'
-M.new = function(enter_win, opts)
+---@return number 'window handler'
+M.open_float_win = function(is_enter_win, opts)
   opts = opts or {}
-  enter_win = enter_win or false
+  is_enter_win = is_enter_win or false
 
   local buf = api.nvim_create_buf(false, true)
   api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
@@ -38,10 +38,7 @@ M.new = function(enter_win, opts)
     col = 0,
     border = 'rounded'
   }
-
-  local win = api.nvim_open_win(buf, enter_win, opts)
-
-  return win
+  return api.nvim_open_win(buf, is_enter_win, opts)
 end
 
 return M

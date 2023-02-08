@@ -1,7 +1,8 @@
 local M = {}
 
----Zip given tables like Python zip function
+---Zip given tables like Python zip function.
 ---
+---@param ... table
 ---@return table
 M.tbl_zip = function(...)
   local idx, ret, args = 1, {}, {...}
@@ -26,8 +27,8 @@ M.tbl_zip = function(...)
   return ret
 end
 
----Return the index of value in table
----Retrun -1 if not exist
+---Return the index of value in table.
+---Retrun -1 if not exists.
 ---
 ---@param list table
 ---@param value any
@@ -42,7 +43,7 @@ M.tbl_get_index = function(list, value)
   return -1
 end
 
----Remove duplicate elements in list, it's inplace
+---Remove duplicate elements in list, it's inplace.
 ---
 ---@param list table
 M.tbl_remove_duplicate = function(list)
@@ -58,8 +59,8 @@ M.tbl_remove_duplicate = function(list)
   list = seen
 end
 
----Remove key (and its value) from table list
----Return a new table
+---Remove key (and its value) from table list.
+---Return a new table.
 ---
 ---@param list table
 ---#param key any
